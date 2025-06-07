@@ -16,16 +16,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Embeddable
 public class CoreSystem {
-    private String core_systems_name; // Corresponde a core_systems_name: String
+    //Dados
+    private String core_systems_name;
     private String active_name;
     private String active_effect;
+    //Tipo de Uso
     private String use;
+    //Caso de Uso
     private String activation;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true) // Exemplo de relação JPA
-    @JoinColumn(name = "core_system_id_fk") // Chave estrangeira na tabela ActiveSynergy
-    private List<ActiveSynergy> active_synergies; // Corresponde ao array de objetos 'active_synergies'
+    //Relação com Active Synergies, possui varias relações
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true) 
+    @JoinColumn(name = "core_system_id_fk")
+    private List<ActiveSynergy> active_synergies;
 
-    @ElementCollection // Exemplo de anotação JPA
-    private List<String> integrated; // Corresponde a integrated: [String]
+    @ElementCollection
+    private List<String> integrated;
 }

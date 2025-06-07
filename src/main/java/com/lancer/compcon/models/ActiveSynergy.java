@@ -22,12 +22,17 @@ public class ActiveSynergy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ElementCollection // Exemplo de anotação JPA
-    private List<String> locations; // Corresponde a locations: [String]
-    private String detail; // Corresponde a detail: String
+    @ElementCollection
+    private List<String> locations;
+    private String detail;
 
-    // Se estiver usando JPA e ActiveSynergy for uma entidade relacionada a CoreSystem:
+    //Relação com Core Sytems
     @ManyToOne
     @JoinColumn(name = "core_system_id_fk", insertable = false, updatable = false)
     private CoreSystem coreSystem;
+
+    public ActiveSynergy(List<String> locations, String detail) {
+        this.locations = locations;
+        this.detail = detail;
+    }
 }

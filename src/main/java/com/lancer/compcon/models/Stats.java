@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Embeddable // Descomente se for usar como um componente embutido JPA
+@Embeddable 
 public class Stats {
-    private Integer size;
+
+    //Status do Frame
+    private Double size;
     private Integer structured;
     private Integer stress;
     private Integer armor;

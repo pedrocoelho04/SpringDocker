@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    # Nomeia a imagem que será construída
+    image: minha-app-spring-compose
+    ports:
+      - "8080:8080"
+    # Mapeamento de volumes
+    volumes:
+      # Mapeia o volume nomeado 'db_data' para o diretório do banco de dados no contêiner
+      - ./sqlite-data:/app/database
+    # Garante que o contêiner sempre reinicie se parar por algum motivo
+    restart: always
+

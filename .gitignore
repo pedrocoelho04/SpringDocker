@@ -6,6 +6,7 @@
 
 # Banco de dados local
 /sqlite-data/
+/compcon.db
 
 # STS / Eclipse
 .apt_generated

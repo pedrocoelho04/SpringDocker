@@ -3,28 +3,31 @@ package com.lancer.compcon.models;
 import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
+import javax.persistence.OneToMany;
+import javax.persistence.CascadeType;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
     //Classe princial
 public class Frames {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String frames_id;
 
     private Integer licensed_level;
 
-     //Nome da Fabricadora
+    //Nome da Fabricadora
     private String source;
     private String frames_name;
 

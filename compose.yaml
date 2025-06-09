@@ -4,7 +4,7 @@ services:
   app:
     build: .
     # Nomeia a imagem que será construída
-    image: minha-app-spring-compose
+    image: compcon-spring-compose
     ports:
       - "8080:8080"
     # Mapeamento de volumes

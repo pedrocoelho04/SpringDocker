@@ -1,96 +1,88 @@
 package com.lancer.compcon.controllers;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.lancer.compcon.models.Trait;
+import com.lancer.compcon.repository.TraitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-import com.lancer.compcon.models.Frames;
-import com.lancer.compcon.models.Trait;
-import com.lancer.compcon.repository.FramesRepository;
-import com.lancer.compcon.repository.TraitRepository;
+import java.util.List;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
-
-// --- Controller para a entidade Trait ---
-// Relevante se Traits puderem ser gerenciados independentemente.
-// Se Traits são sempre parte de um Frame, seu CRUD pode ser gerenciado
-// através do FramesController (ex: POST ).
+/**
+ * Controller para gerir o recurso Trait.
+ * Os mapeamentos de URL foram simplificados para evitar conflitos e seguir as convenções REST.
+ * A associação com Frames é feita através de parâmetros de consulta, o que é uma abordagem limpa e segura.
+ */
 @RestController
-@RequestMapping("/api/frames/{framesId}/traits")
+@RequestMapping("/api/traits") // O caminho base para todos os endpoints de Trait
 public class TraitController {
 
     private final TraitRepository traitRepository;
-    private final FramesRepository framesRepository;
 
+    // Injeção de dependência via construtor (prática recomendada)
     @Autowired
-    public TraitController(TraitRepository traitRepository, FramesRepository framesRepository) {
+    public TraitController(TraitRepository traitRepository) {
         this.traitRepository = traitRepository;
-        this.framesRepository = framesRepository;
     }
 
-    @PostMapping("/frame/{framesId}")
-    public ResponseEntity<Trait> criarTrait(@PathVariable String framesId, @RequestBody Trait trait) {
-        Optional<Frames> frameOptional = framesRepository.findById(framesId);
-        if (!frameOptional.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Frame não encontrado
-        }
-        trait.setFrame(frameOptional.get()); // Supondo que Trait tem um campo 'frame'
+    // GET /api/traits -> Retorna todos os traits
+    @GetMapping
+    public List<Trait> obterTodosTraits() {
+        return traitRepository.findAll();
+    }
+
+    // GET /api/traits/{id} -> Retorna um trait específico pelo seu ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Trait> obterTraitPorId(@PathVariable Long id) {
+        Trait trait = traitRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Trait não encontrado com id: " + id));
+        return ResponseEntity.ok(trait);
+    }
+
+    /**
+     * GET /api/traits/search?frameId={id_do_frame}
+     * Esta é a forma correta de usar o seu método de repositório 'findByFrame_Frames_id'.
+     * Usamos um parâmetro de consulta (@RequestParam) em vez de uma variável de caminho para evitar conflitos.
+     */
+    @GetMapping("/search")
+    public List<Trait> obterTraitsPorFrameId(@RequestParam String frameId) {
+        return traitRepository.findByFrame_Frames_id(frameId);
+    }
+
+    /**
+     * POST /api/traits -> Cria um novo trait.
+     * O corpo da requisição deve conter o JSON do trait.
+     * A associação com um Frame deve ser feita no objeto JSON enviado, se necessário.
+     */
+    @PostMapping
+    public ResponseEntity<Trait> criarTrait(@RequestBody Trait trait) {
         Trait novoTrait = traitRepository.save(trait);
         return new ResponseEntity<>(novoTrait, HttpStatus.CREATED);
     }
 
-    // READ: Obter todos os Traits
-    @GetMapping
-    public ResponseEntity<List<Trait>> obterTodosTraits() {
-        List<Trait> traits = traitRepository.findAll();
-        if (traits.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    // PUT /api/traits/{id} -> Atualiza um trait existente
+    @PutMapping("/{id}")
+    public ResponseEntity<Trait> atualizarTrait(@PathVariable Long id, @RequestBody Trait traitDetalhes) {
+        Trait traitExistente = traitRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Trait não encontrado com id: " + id));
+
+        traitExistente.setTraits_name(traitDetalhes.getTraits_name());
+        traitExistente.setDescription(traitDetalhes.getDescription());
+        // Se houver mais campos a serem atualizados, adicione-os aqui.
+
+        final Trait traitAtualizado = traitRepository.save(traitExistente);
+        return ResponseEntity.ok(traitAtualizado);
+    }
+
+    // DELETE /api/traits/{id} -> Deleta um trait
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deletarTrait(@PathVariable Long id) {
+        if (!traitRepository.existsById(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(traits, HttpStatus.OK);
-    }
-
-    // READ: Obter um Trait pelo ID (Long)
-    @GetMapping("/{traitId}")
-    public ResponseEntity<Trait> obterTraitPorId(@PathVariable Long traitId) {
-        return traitRepository.findById(traitId)
-                .map(trait -> new ResponseEntity<>(trait, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    // UPDATE: Atualizar um Trait existente
-    @PutMapping("/{traitId}")
-    public ResponseEntity<Trait> atualizarTrait(@PathVariable Long traitId, @RequestBody Trait traitAtualizado) {
-        return traitRepository.findById(traitId)
-                .map(traitExistente -> {
-                    traitExistente.setTraits_name(traitAtualizado.getTraits_name());
-                    traitExistente.setDescription(traitAtualizado.getDescription());
-                    // Atualize outros campos se houver
-                    return new ResponseEntity<>(traitRepository.save(traitExistente), HttpStatus.OK);
-                })
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    // DELETE: Deletar um Trait
-    @DeleteMapping("/{traitId}")
-    public ResponseEntity<HttpStatus> deletarTrait(@PathVariable Long traitId) {
-        try {
-            if (!traitRepository.existsById(traitId)) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-            traitRepository.deleteById(traitId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        traitRepository.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

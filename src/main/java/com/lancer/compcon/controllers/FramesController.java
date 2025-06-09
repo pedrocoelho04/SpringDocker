@@ -22,7 +22,6 @@ public class FramesController {
 
     @PostMapping
     public ResponseEntity<Frames> criarFrame(@RequestBody Frames frame) {
-        // A lógica de criação não muda, pois o 'id' é gerado automaticamente
         Frames novoFrame = framesRepository.save(frame);
         return new ResponseEntity<>(novoFrame, HttpStatus.CREATED);
     }
@@ -45,7 +44,7 @@ public class FramesController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    // NOVO ENDPOINT: Busca pelo ID de negócio (a string original)
+    // Busca pelo ID de negócio (a string original)
     // Exemplo de uso: /api/frames/by_id/gpc_genghis
     @GetMapping("/by_id/{frames_id}")
     public ResponseEntity<Frames> obterFramePeloIdString(@PathVariable String frames_id) {
@@ -54,7 +53,7 @@ public class FramesController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    // MUDANÇA AQUI: O endpoint agora usa o 'id' numérico para encontrar o frame a ser atualizado
+    //O endpoint agora usa o 'id' numérico para encontrar o frame a ser atualizado
     @PutMapping("/{id}")
     public ResponseEntity<Frames> atualizarFrame(@PathVariable Long id, @RequestBody Frames frameAtualizado) {
         Optional<Frames> frameExistenteData = framesRepository.findById(id);
@@ -83,7 +82,7 @@ public class FramesController {
         }
     }
 
-    // MUDANÇA AQUI: O endpoint agora usa o 'id' numérico para deletar
+    //O endpoint agora usa o 'id' numérico para deletar
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deletarFrame(@PathVariable Long id) {
         if (!framesRepository.existsById(id)) {

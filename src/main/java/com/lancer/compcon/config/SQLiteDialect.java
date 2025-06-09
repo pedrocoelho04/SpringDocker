@@ -4,18 +4,19 @@ import java.sql.Types;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.identity.IdentityColumnSupport;
 import org.hibernate.dialect.function.StandardSQLFunction;
+import org.hibernate.dialect.function.SQLFunctionTemplate;
 import org.hibernate.dialect.function.VarArgsSQLFunction;
 import org.hibernate.type.StringType;
 
 /**
  * Classe de Dialeto Personalizada para SQLite.
- * Esta classe diz ao Hibernate como traduzir corretamente as consultas JPA
- * para o formato que o banco de dados SQLite entende.
- * Ela resolve o problema de 'ClassNotFoundException' ao fornecer o dialeto diretamente.
+ * Esta versão final corrige a definição da coluna de identidade para
+ * evitar a dupla declaração da chave primária.
  */
 public class SQLiteDialect extends Dialect {
 
     public SQLiteDialect() {
+        // Mapeamento de tipos (continua igual)
         registerColumnType(Types.BIT, "integer");
         registerColumnType(Types.TINYINT, "tinyint");
         registerColumnType(Types.SMALLINT, "smallint");
@@ -50,62 +51,45 @@ public class SQLiteDialect extends Dialect {
         return new SQLiteIdentityColumnSupport();
     }
 
+    // Outros métodos de dialeto (continuam iguais)
     @Override
-    public boolean hasAlterTable() {
-        return false;
-    }
+    public boolean hasAlterTable() { return false; }
 
     @Override
-    public boolean dropConstraints() {
-        return false;
-    }
+    public boolean dropConstraints() { return false; }
 
     @Override
-    public String getDropForeignKeyString() {
-        return "";
-    }
+    public String getDropForeignKeyString() { return ""; }
 
     @Override
-    public String getAddForeignKeyConstraintString(String constraintName, String[] foreignKey, String referencedTable,
-            String[] primaryKey, boolean referencesPrimaryKey) {
-        return "";
-    }
+    public String getAddForeignKeyConstraintString(String constraintName, String[] foreignKey, String referencedTable, String[] primaryKey, boolean referencesPrimaryKey) { return ""; }
 
     @Override
     public String getAddPrimaryKeyConstraintString(String constraintName) {
+        // Retorna uma string vazia para impedir que o Hibernate adicione a segunda chave primária
         return "";
     }
 
     @Override
-    public String getForUpdateString() {
-        return "";
-    }
+    public String getForUpdateString() { return ""; }
 
     @Override
-    public String getAddColumnString() {
-        return "add column";
-    }
+    public String getAddColumnString() { return "add column"; }
 
     @Override
-    public boolean supportsOuterJoinForUpdate() {
-        return false;
-    }
+    public boolean supportsOuterJoinForUpdate() { return false; }
 
     @Override
-    public boolean supportsIfExistsBeforeTableName() {
-        return true;
-    }
+    public boolean supportsIfExistsBeforeTableName() { return true; }
 
     @Override
-    public boolean supportsCascadeDelete() {
-        return false;
-    }
+    public boolean supportsCascadeDelete() { return false; }
 }
 
 /**
  * Classe auxiliar necessária para o SQLiteDialect.
- * Ela informa ao Hibernate como lidar com colunas de identidade auto-incrementadas
- * (por exemplo, @GeneratedValue(strategy = GenerationType.IDENTITY)) no SQLite.
+ * Esta versão foi corrigida para usar a sintaxe correta do SQLite
+ * para colunas de identidade auto-incrementadas.
  */
 class SQLiteIdentityColumnSupport extends org.hibernate.dialect.identity.IdentityColumnSupportImpl {
     @Override
@@ -125,6 +109,9 @@ class SQLiteIdentityColumnSupport extends org.hibernate.dialect.identity.Identit
 
     @Override
     public String getIdentityColumnString(int type) {
+        // --- CORREÇÃO PRINCIPAL APLICADA AQUI ---
+        // Agora definimos a coluna apenas como auto-incrementada, sem
+        // a cláusula 'primary key', que será adicionada pelo Hibernate.
         return "integer";
     }
 }

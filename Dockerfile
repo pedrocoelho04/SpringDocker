@@ -37,4 +37,4 @@ COPY --from=build /app/target/*.jar app.jar
 
 # Comando para iniciar a aplicação quando o contêiner for executado
 # Força o banco a ser criado na pasta mapeada pelo volume
-ENTRYPOINT ["java", "-jar", "-Dspring.datasource.url=jdbc:sqlite:/app/database/meubanco.db", "app.jar"]
+ENTRYPOINT ["java", "-jar", "-Dspring.datasource.url=jdbc:sqlite:/app/database/compcon.db", "app.jar"]

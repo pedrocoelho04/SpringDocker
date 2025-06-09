@@ -1,6 +1,5 @@
 # --- Estágio 1: Build da Aplicação com Maven e JDK ---
-# Usamos uma imagem oficial do Maven com JDK 17. Ela tem tudo que precisamos para compilar.
-# Se seu projeto usa Java 11, troque para: maven:3.8.5-openjdk-11
+# Usamos uma imagem oficial do Maven com JDK 11.
 FROM maven:3.8.5-openjdk-11 AS build
 
 # Define o diretório de trabalho dentro do contêiner de build
@@ -16,7 +15,7 @@ RUN mvn dependency:go-offline
 COPY src ./src
 
 # Executa o build para criar o .jar
-# O -DskipTests pula os testes, o que é comum para builds em Docker
+# O -DskipTests pula os testes
 RUN mvn package -DskipTests
 
 

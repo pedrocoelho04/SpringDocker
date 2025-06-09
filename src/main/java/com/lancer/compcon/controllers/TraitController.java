@@ -10,18 +10,14 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-/**
- * Controller para gerir o recurso Trait.
- * Os mapeamentos de URL foram simplificados para evitar conflitos e seguir as convenções REST.
- * A associação com Frames é feita através de parâmetros de consulta, o que é uma abordagem limpa e segura.
- */
 @RestController
-@RequestMapping("/api/traits") // O caminho base para todos os endpoints de Trait
+@RequestMapping("/api/traits")
 public class TraitController {
 
     private final TraitRepository traitRepository;
 
-    // Injeção de dependência via construtor (prática recomendada)
+    // Injeção de dependência via construtor
+    // Sem isso o codigo nao funcionou
     @Autowired
     public TraitController(TraitRepository traitRepository) {
         this.traitRepository = traitRepository;
@@ -43,8 +39,6 @@ public class TraitController {
 
     /**
      * GET /api/traits/search?frameId={id_do_frame}
-     * Esta é a forma correta de usar o seu método de repositório 'findByFrame_Frames_id'.
-     * Usamos um parâmetro de consulta (@RequestParam) em vez de uma variável de caminho para evitar conflitos.
      */
     @GetMapping("/search")
     public List<Trait> obterTraitsPorFrameId(@RequestParam String frameId) {
@@ -53,8 +47,6 @@ public class TraitController {
 
     /**
      * POST /api/traits -> Cria um novo trait.
-     * O corpo da requisição deve conter o JSON do trait.
-     * A associação com um Frame deve ser feita no objeto JSON enviado, se necessário.
      */
     @PostMapping
     public ResponseEntity<Trait> criarTrait(@RequestBody Trait trait) {
@@ -70,7 +62,6 @@ public class TraitController {
 
         traitExistente.setTraits_name(traitDetalhes.getTraits_name());
         traitExistente.setDescription(traitDetalhes.getDescription());
-        // Se houver mais campos a serem atualizados, adicione-os aqui.
 
         final Trait traitAtualizado = traitRepository.save(traitExistente);
         return ResponseEntity.ok(traitAtualizado);

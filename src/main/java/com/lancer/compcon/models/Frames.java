@@ -15,8 +15,7 @@ import javax.persistence.CascadeType;
 
 @Data
 @NoArgsConstructor
-@Entity
-    //Classe princial
+@Entity //Classe princial
 public class Frames {
 
     @Id

@@ -6,10 +6,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * Classe de configuração para resolver o problema de CORS (Cross-Origin Resource Sharing).
- * Este problema ocorre quando o frontend (neste caso, o Swagger UI) tenta fazer uma requisição
- * para o backend (sua API Spring Boot) a partir de uma origem (domínio, porta ou protocolo) diferente.
- * Por segurança, os navegadores bloqueiam essas requisições, a menos que o servidor explicitamente as permita.
- * Esta configuração permite que sua API aceite requisições de qualquer origem.
  */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {

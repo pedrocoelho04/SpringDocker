@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@Embeddable 
+@Embeddable // A classe é um componente, não uma entidade principal.
 public class CoreSystem {
     private String core_systems_name;
     private String active_name;

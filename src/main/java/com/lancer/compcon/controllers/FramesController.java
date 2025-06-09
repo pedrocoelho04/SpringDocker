@@ -35,7 +35,7 @@ public class FramesController {
         return new ResponseEntity<>(frames, HttpStatus.OK);
     }
 
-    // Endpoint para buscar pelo ID numérico (CHAVE PRIMÁRIA)
+    // Endpoint para buscar pelo ID numérico
     // Exemplo de uso: /api/frames/1
     @GetMapping("/{id}")
     public ResponseEntity<Frames> obterFramePorId(@PathVariable Long id) {
@@ -44,7 +44,7 @@ public class FramesController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    // Busca pelo ID de negócio (a string original)
+    // Busca pelo ID de negocio
     // Exemplo de uso: /api/frames/by_id/gpc_genghis
     @GetMapping("/by_id/{frames_id}")
     public ResponseEntity<Frames> obterFramePeloIdString(@PathVariable String frames_id) {

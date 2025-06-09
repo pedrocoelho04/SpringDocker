@@ -44,7 +44,6 @@ public class DataSeeder implements CommandLineRunner {
         Trait explosiveShunt = new Trait("Explosive Shunt", "Quando você é destruído, você explode em uma explosão 2. Todos os personagens na área devem ter sucesso em um teste de Agilidade ou sofrer 2d6 de dano explosivo.");
         Trait autoCooler = new Trait("Auto-Cooler", "No final de cada um dos seus turnos, limpe 1 Calor se você não tiver se movido mais do que sua velocidade.");
         
-        // CORREÇÃO APLICADA AQUI: A lista de 'locations' foi convertida para uma única String.
         ActiveSynergy luciferno = new ActiveSynergy("Ataque, Arma de Calor, Explosão 1", "Você causa +1 de dano de calor adicional em todos os ataques que não são superpesados.");
         
         CoreSystem genghisCore = new CoreSystem();

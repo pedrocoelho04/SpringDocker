@@ -8,9 +8,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CompconApplication {
 
 	public static void main(String[] args) {
+		// Por algum motivo a aplicação começou a desligar apos terminar de executar o codigo,
+		// como se não tivesse a dependencia de ser uma API.
+		// então procurei uma forma de forçar:
 	    SpringApplication app = new SpringApplication(CompconApplication.class);
-        app.setWebApplicationType(WebApplicationType.SERVLET);
-        app.run(args);
+        app.setWebApplicationType(WebApplicationType.SERVLET); // com isso
+        app.run(args); // e isso
 	}
 
 }

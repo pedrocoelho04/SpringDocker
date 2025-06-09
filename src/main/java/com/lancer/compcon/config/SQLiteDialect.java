@@ -4,7 +4,6 @@ import java.sql.Types;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.identity.IdentityColumnSupport;
 import org.hibernate.dialect.function.StandardSQLFunction;
-import org.hibernate.dialect.function.SQLFunctionTemplate;
 import org.hibernate.dialect.function.VarArgsSQLFunction;
 import org.hibernate.type.StringType;
 
@@ -109,9 +108,6 @@ class SQLiteIdentityColumnSupport extends org.hibernate.dialect.identity.Identit
 
     @Override
     public String getIdentityColumnString(int type) {
-        // --- CORREÇÃO PRINCIPAL APLICADA AQUI ---
-        // Agora definimos a coluna apenas como auto-incrementada, sem
-        // a cláusula 'primary key', que será adicionada pelo Hibernate.
         return "integer";
     }
 }
